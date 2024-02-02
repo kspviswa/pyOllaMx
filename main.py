@@ -12,7 +12,7 @@ def main(page: ft.Page) -> None:
     page.bgcolor = '#C7F9D6'
     page.window_resizable = False
 
-    page.window_height = 880
+    page.window_height = 885
     page.window_width= 872
     #page.vertical_alignment = ft.MainAxisAlignment.CENTER
     #page.horizontal_alignment_alignment = ft.CrossAxisAlignment.CENTER
@@ -34,6 +34,7 @@ def main(page: ft.Page) -> None:
                       fit=ft.ImageFit.CONTAIN,
                       )
     banner_text = ft.Text(value='pyOllaMx', style=ft.TextStyle(font_family='CabinSketch-Bold'), size=30)
+    subbanner_text = ft.Text(value='Your gateway to both Ollama & pyOMlx')
     chat_messages = ft.Column(
                               alignment=ft.MainAxisAlignment.CENTER,
                               horizontal_alignment=ft.CrossAxisAlignment.START,
@@ -145,7 +146,7 @@ def main(page: ft.Page) -> None:
     select_mlX_models.on_change = swapModels
     temp_slider.on_change = displayTemp
 
-    top_banner_view = ft.Row([ft.Column([banner_image, banner_text], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER)], alignment=ft.MainAxisAlignment.CENTER)
+    top_banner_view = ft.Row([ft.Column([banner_image, banner_text, subbanner_text], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER)], alignment=ft.MainAxisAlignment.CENTER)
 
     temp_control_view = ft.Column([
         temp_slider,
