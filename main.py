@@ -10,10 +10,10 @@ def main(page: ft.Page) -> None:
     page.theme_mode = 'light'
     page.scroll = ft.ScrollMode.ADAPTIVE
     page.bgcolor = '#C7F9D6'
-    #page.window_resizable = True
+    page.window_resizable = False
 
-    #page.window_min_height = 600
-    #page.window_min_width= 800
+    page.window_height = 880
+    page.window_width= 872
     #page.vertical_alignment = ft.MainAxisAlignment.CENTER
     #page.horizontal_alignment_alignment = ft.CrossAxisAlignment.CENTER
     page.theme = ft.theme.Theme(font_family="CabinSketch-Regular")
@@ -36,9 +36,10 @@ def main(page: ft.Page) -> None:
     banner_text = ft.Text(value='pyOllaMx', style=ft.TextStyle(font_family='CabinSketch-Bold'), size=30)
     chat_messages = ft.Column(
                               alignment=ft.MainAxisAlignment.CENTER,
+                              horizontal_alignment=ft.CrossAxisAlignment.START,
                               scroll=ft.ScrollMode.ADAPTIVE,
-                              height=150,
-                              width=650
+                              height=400,
+                              width=700,
                               )
     #chat_messages = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=True)
     user_text = ft.Text(value='Enter your prompt', style=ft.TextStyle(font_family='CabinSketch-Bold'))
@@ -76,7 +77,7 @@ def main(page: ft.Page) -> None:
                     ft.Container(content=ft.Markdown(value=message.text, extension_set="gitHubWeb", code_theme='obsidian', code_style=ft.TextStyle(font_family='Roboto Mono'),selectable=True),
                                  width=550)
                 ],
-                width=500, vertical_alignment=ft.CrossAxisAlignment.START
+                width=500, vertical_alignment=ft.CrossAxisAlignment.START,
                 )
             )
         else:
@@ -86,7 +87,7 @@ def main(page: ft.Page) -> None:
                              width=50,
                              height=50,
                              fit=ft.ImageFit.CONTAIN),
-                    ft.Text(message.text)
+                    ft.Text(message.text, selectable=True)
                 ],
                 auto_scroll=True,
                 width=500
@@ -99,12 +100,14 @@ def main(page: ft.Page) -> None:
         pr_ph.value='Working...🏃🏻‍♂️⏳'
         pr.value = None
         user_text_field.disabled = True
+        send_button.disabled = True
         page.update()
     
     def end_spinning():
         pr_ph.value=""
         pr.value = 0
         user_text_field.disabled = False
+        send_button.disabled = False
         page.update()
 
     def send(e: ControlEvent) -> None:
@@ -168,16 +171,19 @@ def main(page: ft.Page) -> None:
             user_text_field
         ]),
         send_button
-    ], vertical_alignment=ft.CrossAxisAlignment.CENTER)
+    ], vertical_alignment=ft.CrossAxisAlignment.CENTER, alignment=ft.MainAxisAlignment.CENTER)
     
     page.add(top_banner_view)
     page.add(controls_view)
     page.add(chat_messages)
-    page.add(ft.Row([pr,pr_ph]))
+    page.add(ft.Row([pr,pr_ph], alignment=ft.MainAxisAlignment.CENTER, vertical_alignment=ft.CrossAxisAlignment.CENTER))
     page.add(user_input_view)
-    print(f'Window  width {page.width}')
-    print(f'Window  height {page.height}')
 
+    def printSize(e: ControlEvent):
+        print(f'Window  width {page.window_height}')
+        print(f'Window  height {page.window_width}')
+    
+    page.on_resize = printSize
 
 
 if __name__ == '__main__':
