@@ -1,13 +1,13 @@
 from langchain_community.llms import Ollama
 #from langchain_community.tools import DuckDuckGoSearchResults, DuckDuckGoSearchRun
-from  langchain_community.tools.ddg_search.tool import DuckDuckGoSearchRun
-from langchain.agents import AgentExecutor, create_react_agent, create_self_ask_with_search_agent
-from langchain_core.tools import Tool
-from langchain import hub
+#from  langchain_community.tools.ddg_search.tool import DuckDuckGoSearchRun
+#from langchain.agents import AgentExecutor, create_react_agent, create_self_ask_with_search_agent
+#from langchain_core.tools import Tool
+#from langchain import hub
 from mlxLLM import MlxLLM
 
 
-tools = [DuckDuckGoSearchRun(name='Intermediate Answer')]
+#tools = [DuckDuckGoSearchRun(name='Intermediate Answer')]
 
 def firePrompt(prompt: str, model: str="dolphin-mistral:latest", temp=0.4, isMlx=False) -> str:
     if isMlx:
