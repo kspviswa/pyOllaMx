@@ -8,7 +8,7 @@ DEFAULT_OLLAMA_MODEL_REGISTRY = Path("~/.ollama/models/manifests/registry.ollama
 DEFAULT_HF_MLX_MODEL_REGISTRY = Path("~/.cache/huggingface/hub/").expanduser()
 
 def returnModels() -> List[str]:
-    print(DEFAULT_OLLAMA_MODEL_REGISTRY)
+    #print(DEFAULT_OLLAMA_MODEL_REGISTRY)
     models = []
     for d in os.listdir(DEFAULT_OLLAMA_MODEL_REGISTRY):
         a_dir = os.path.join(DEFAULT_OLLAMA_MODEL_REGISTRY, d)
@@ -25,10 +25,10 @@ def returnMlxModels() -> List[str]:
     for d in os.listdir(DEFAULT_HF_MLX_MODEL_REGISTRY):
         a_dir = os.path.join(DEFAULT_HF_MLX_MODEL_REGISTRY, d)
         if os.path.isdir(a_dir) and not d.startswith('.'):
-            print(f'a_dir is {a_dir}')
+            #print(f'a_dir is {a_dir}')
             model = re.split('--', d)[-1]  
             models.append(model)
-    print(models)
+    #print(models)
     return models
 
 def retModelOptions(isMlx=False):

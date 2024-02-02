@@ -30,7 +30,12 @@ class MlxLLM(LLM):
         if stop is not None:
             raise ValueError("stop kwargs are not permitted.")
         data = {'model': self.model, 'prompt': prompt, 'temp' : self.temp}
-        response = requests.post(self.llmHost, data=json.dumps(data), headers={'Content-Type': 'application/json'})
+        try:
+            response = requests.post(self.llmHost, data=json.dumps(data), headers={'Content-Type': 'application/json'})
+            if not response.ok():
+                raise requests.ConnectionError
+        except Exception as e:
+            raise requests.ConnectionError
         return response.text
 
     @property
