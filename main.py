@@ -6,7 +6,7 @@ from utils import Avatar, Message
 
 
 def main(page: ft.Page) -> None:
-    page.title = 'pyOllama'
+    page.title = 'pyOllaMx'
     page.theme_mode = 'light'
     page.scroll = ft.ScrollMode.ADAPTIVE
     page.bgcolor = '#C7F9D6'
