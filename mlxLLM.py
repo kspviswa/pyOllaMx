@@ -9,9 +9,11 @@ import json
 class MlxLLM(LLM):
     llmHost = 'http://127.0.0.1:5000/serve'
     model = ""
-    def __init__(self, model=""):
+    temp = 0.3
+    def __init__(self, model="", temp=0.3):
         super().__init__()
         self.model = model
+        self.temp = temp
 
 
     @property
@@ -27,11 +29,11 @@ class MlxLLM(LLM):
     ) -> str:
         if stop is not None:
             raise ValueError("stop kwargs are not permitted.")
-        data = {'model': self.model, 'prompt': prompt}
+        data = {'model': self.model, 'prompt': prompt, 'temp' : self.temp}
         response = requests.post(self.llmHost, data=json.dumps(data), headers={'Content-Type': 'application/json'})
         return response.text
 
     @property
     def _identifying_params(self) -> Mapping[str, Any]:
         """Get the identifying parameters."""
-        return {"llmHost": self.llmHost, "model":self.model}
+        return {"llmHost": self.llmHost, "model":self.model, "temp" : self.temp}

@@ -10,8 +10,10 @@ def main(page: ft.Page) -> None:
     page.theme_mode = 'light'
     page.scroll = ft.ScrollMode.ADAPTIVE
     page.bgcolor = '#C7F9D6'
-    #page.window_max_height = 600
-    #page.window_max_width= 800
+    page.window_max_height = 600
+    page.window_max_width= 800
+    page.window_min_height = 600
+    page.window_min_width= 800
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.theme = ft.theme.Theme(font_family="CabinSketch-Regular")
     page.fonts = {
@@ -44,9 +46,14 @@ def main(page: ft.Page) -> None:
         options = retModelOptions(),
         value = "unselected",
         dense=True,
-        focused_bgcolor='pink'
+        focused_bgcolor='pink',
     )
-    select_mlX_models = ft.Checkbox(label='Select mlX models from HF')
+    select_mlX_models = ft.Switch(label='Load 🖥️ mlX models from HF',
+                                  value=False,
+                                  adaptive=True)
+    temp_label = ft.Text(value='Temperature')
+    temp_slider = ft.CupertinoSlider(min=0.0, max=1.0, divisions=10, value=0.3)
+    temp_value_label = ft.Text(value=temp_slider.value)
 
     def updateChat(message: Message, ai_response: bool = False):
         if ai_response:
@@ -98,7 +105,7 @@ def main(page: ft.Page) -> None:
         user_text_field.value = ""
         show_spinning()
         isMlx = select_mlX_models.value
-        res = firePrompt(prompt=prompt, model=model_dropdown.value, isMlx=isMlx)
+        res = firePrompt(prompt=prompt, model=model_dropdown.value, temp=temp_slider.value, isMlx=isMlx)
         updateChat(Message(user='assistant', text=res), ai_response=True)
         end_spinning()
         page.update()
@@ -114,12 +121,17 @@ def main(page: ft.Page) -> None:
         else:
             model_dropdown.options = retModelOptions()
         page.update()
+    
+    def displayTemp(e: ControlEvent) -> None:
+        temp_value_label.value = temp_slider.value
+        page.update()
 
     send_button.on_click = send
     send_button.disabled = True
     user_text_field.on_change = enableSend
     model_dropdown.on_change = enableSend
     select_mlX_models.on_change = swapModels
+    temp_slider.on_change = displayTemp
     page.add(ft.Row([ft.Image(src=f"logos/pyollama_1.png",
                       width=150,
                       height=150,
@@ -127,17 +139,23 @@ def main(page: ft.Page) -> None:
                       )],
                       alignment=ft.MainAxisAlignment.CENTER))
     page.add(chat_messages)
-    page.add(user_text)
+    page.add(ft.Row([
+        user_text,
+        ft.Row([temp_slider, temp_label, temp_value_label]
+        ),
+    ]))
     page.add(ft.Row([
         user_text_field,
         send_button,
     ]))
     page.add(ft.Row([
         model_dropdown,
-        select_mlX_models,
-    ]))
-    page.add(ft.Text('^Ollama models are loaded by default', style=ft.TextStyle(size=10)))
-    #page.add(model_dropdown)
+        ft.Column([
+            select_mlX_models,
+            ft.Text('^Ollama models are loaded by default', style=ft.TextStyle(size=14), text_align=ft.TextAlign.RIGHT),
+        ]),
+    ],
+    ))
     page.add(ft.Column([pr,pr_ph]))
     print(f'Window  width {page.width}')
     print(f'Window  height {page.height}')

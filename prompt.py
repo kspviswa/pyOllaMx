@@ -11,7 +11,7 @@ tools = [DuckDuckGoSearchRun(name='Intermediate Answer')]
 
 def firePrompt(prompt: str, model: str="dolphin-mistral:latest", temp=0.4, isMlx=False) -> str:
     if isMlx:
-        llm = MlxLLM(model=model)
+        llm = MlxLLM(model=model, temp=temp)
     else:
         llm = Ollama(model=model,
              temperature=temp
