@@ -1,1 +1,1 @@
-![](assets/logos/pyollama_1.png)
+![](assets/icon.png)
