@@ -1,4 +1,4 @@
-![](assets/icon.png)
+![](assets/logos/readme_logo.png)
 # PyOllaMx
 #### `Your gateway to both Ollama & Apple MlX models`
 
