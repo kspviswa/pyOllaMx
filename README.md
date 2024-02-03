@@ -1,1 +1,1 @@
-![](assets/icon.png)
+![](assets/logos/readme_logo.png)
