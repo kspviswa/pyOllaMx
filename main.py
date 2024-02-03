@@ -12,10 +12,9 @@ def main(page: ft.Page) -> None:
     page.bgcolor = '#C7F9D6'
     page.window_resizable = False
 
-    page.window_height = 885
+    page.window_height = 880
     page.window_width= 872
-    #page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    #page.horizontal_alignment_alignment = ft.CrossAxisAlignment.CENTER
+
     page.theme = ft.theme.Theme(font_family="CabinSketch-Regular")
     page.fonts = {
     "Roboto Mono": "RobotoMono-VariableFont_wght.ttf",
@@ -23,26 +22,22 @@ def main(page: ft.Page) -> None:
     "CabinSketch-Bold" : "fonts/CabinSketch-Bold.ttf",
     "CabinSketch-Regular" : "fonts/CabinSketch-Regular.ttf"
     }
-    # page.appbar = ft.AppBar(
-    #     title=ft.Text("pyOllama"),
-    #     center_title=True,
-    #     bgcolor='#C7F9D6',
-    # )
+
     banner_image = ft.Image(src=f"logos/pyollama_1.png",
                       width=125,
                       height=125,
                       fit=ft.ImageFit.CONTAIN,
                       )
     banner_text = ft.Text(value='pyOllaMx', style=ft.TextStyle(font_family='CabinSketch-Bold'), size=30)
-    subbanner_text = ft.Text(value='Your gateway to both Ollama & pyOMlx')
+    subbanner_text = ft.Text(value='Your gateway to both Ollama & Apple MlX models')
     chat_messages = ft.Column(
                               alignment=ft.MainAxisAlignment.CENTER,
                               horizontal_alignment=ft.CrossAxisAlignment.START,
                               scroll=ft.ScrollMode.ADAPTIVE,
-                              height=400,
+                              height=392,
                               width=700,
                               )
-    #chat_messages = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=True)
+
     user_text = ft.Text(value='Enter your prompt', style=ft.TextStyle(font_family='CabinSketch-Bold'))
     user_text_field = ft.TextField(multiline=True,
                                    width=675)
@@ -112,7 +107,6 @@ def main(page: ft.Page) -> None:
         page.update()
 
     def send(e: ControlEvent) -> None:
-        print('prompting...')
         prompt = user_text_field.value
         updateChat(Message(user='user', text=prompt))
         user_text_field.value = ""
@@ -179,12 +173,6 @@ def main(page: ft.Page) -> None:
     page.add(chat_messages)
     page.add(ft.Row([pr,pr_ph], alignment=ft.MainAxisAlignment.CENTER, vertical_alignment=ft.CrossAxisAlignment.CENTER))
     page.add(user_input_view)
-
-    def printSize(e: ControlEvent):
-        print(f'Window  width {page.window_height}')
-        print(f'Window  height {page.window_width}')
-    
-    page.on_resize = printSize
 
 
 if __name__ == '__main__':
