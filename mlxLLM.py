@@ -32,7 +32,8 @@ class MlxLLM(LLM):
         data = {'model': self.model, 'prompt': prompt, 'temp' : self.temp}
         try:
             response = requests.post(self.llmHost, data=json.dumps(data), headers={'Content-Type': 'application/json'})
-            if not response.ok():
+            print(f'response code {response.status_code}')
+            if response.status_code != 200:
                 raise requests.ConnectionError
         except Exception as e:
             raise requests.ConnectionError
