@@ -1,0 +1,15 @@
+- [x] Basic working setup
+- [ ] Search engine integration
+- [ ] Chat history persistence
+- [ ] RAG on chat history
+- [ ] RAG on documents
+- [ ] Support Image models - Image upload
+- [ ] Support for Image generation
+- [ ] Support for music / audio generation
+- [ ] AI assistant talk back
+- [ ] User/AI Avatar customization
+- [ ] Streaming support
+- [ ] On-demand model download (both Ollama & MlX HF) from PyOllaMX screen
+- [ ] Theme Customization
+- [ ] User defined resize / adaptive screen
+- [ ] Support other OS

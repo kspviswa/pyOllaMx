@@ -6,9 +6,13 @@ Inspired by [Ollama](https://github.com/ollama/ollama), [Apple MlX](https://gith
 
 All these lead to this project (PyOllaMx) and another sister project called [PyOMlx](https://github.com/kspviswa/PyOMlx).
 
-I'm using these in my day to day workflow and I intend to keep develop these for my use and benifit. If you find this valuable, feel free to use it and contribute to this project as well.
+I'm using these in my day to day workflow and I intend to keep develop these for my use and benifit.
 
-MacOS DMGs are available in Releases
+If you find this valuable, feel free to use it and contribute to this project as well. Please ⭐️ this repo to show your support and make my day!
+
+I'm planning on work on next items on this [roadmap.md](roadmap.md). Feel free to comment your thoughts (if any) and influence my work (if interested)
+
+MacOS DMGs are available in [Releases](https://github.com/kspviswa/pyOllaMx/releases)
 
 ## PyOllaMx vs PyOMlx
 
@@ -37,6 +41,8 @@ huggingface-cli download mlx-community/CodeLlama-7b-Python-4bit-MLX
 This command will download the MlX models in a known location to PyOllaMx
 
 3) Now simply open the **PyOllaMx** and start chatting
+
+![](assets/pyollamx_sample.png)
 
 ## v0.0.1 Features
 
