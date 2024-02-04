@@ -66,7 +66,7 @@ def main(page: ft.Page) -> None:
         if ai_response:
             chat_messages.controls.append(
                 ft.Row([
-                    ft.Image(src=f"logos/pyollama_1.png",
+                    ft.Image(src=getAILogo(select_mlX_models.value),
                              width=50,
                              height=50,
                              fit=ft.ImageFit.CONTAIN),
@@ -91,6 +91,8 @@ def main(page: ft.Page) -> None:
             )
         page.update()
 
+    def getAILogo(isMlx: bool):
+        return f'logos/mlx_logo.png' if isMlx else f'logos/pyollama_1.png'
 
     def show_spinning():
         pr_ph.value='Working...🏃🏻‍♂️⏳'
@@ -127,6 +129,7 @@ def main(page: ft.Page) -> None:
             model_dropdown.options = retModelOptions(True)
         else:
             model_dropdown.options = retModelOptions()
+        banner_image.src = getAILogo(select_mlX_models.value)
         page.update()
     
     def displayTemp(e: ControlEvent) -> None:
