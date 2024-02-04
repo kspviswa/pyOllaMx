@@ -44,6 +44,10 @@ This command will download the MlX models in a known location to PyOllaMx
 
 ![](assets/pyollamx_sample.png)
 
+## Demo
+
+https://github.com/kspviswa/pyOllaMx/assets/7476271/dc686d60-182d-4f90-a771-9c1df1c70b5c
+
 ## v0.0.1 Features
 
 - Auto discover Ollama & MlX models. Simply download the models as you do with respective tools and pyOllaMx would pull the models seamlessly
