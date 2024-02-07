@@ -83,12 +83,13 @@ def main(page: ft.Page) -> None:
                              width=50,
                              height=50,
                              fit=ft.ImageFit.CONTAIN),
-                    ft.Text(message.text, selectable=True)
+                    ft.Container(content=ft.Text(message.text, selectable=True), width=500)
                 ],
                 auto_scroll=True,
                 width=500
                 )
             )
+        chat_messages.scroll_to(offset=-1, duration=1000, curve=ft.AnimationCurve.EASE_IN_OUT)
         page.update()
 
     def getAILogo(isMlx: bool):
