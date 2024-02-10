@@ -4,3 +4,7 @@ system_prompt = f"""
     search_text : 
     user_prompt :
 """
+
+My apple watch is constantly overheating. Are there any recent issues on this one?
+
+I'm planning a short road trip from Dallas where I'm currently. What are my options within 100 miles distance and for a budget around 2000$ ? Give me a detailed itenary
