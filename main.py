@@ -34,14 +34,41 @@ def main(page: ft.Page) -> None:
                               alignment=ft.MainAxisAlignment.CENTER,
                               horizontal_alignment=ft.CrossAxisAlignment.START,
                               scroll=ft.ScrollMode.ADAPTIVE,
-                              height=392,
+                              height=350,
                               width=700,
                               )
+    search_messages = ft.Column(
+                            alignment=ft.MainAxisAlignment.CENTER,
+                            horizontal_alignment=ft.CrossAxisAlignment.START,
+                            scroll=ft.ScrollMode.ADAPTIVE,
+                            height=350,
+                            width=700,
+                            )
+    tabs = ft.Tabs(
+        selected_index=0,
+        animation_duration=300,
+        tabs=[
+            ft.Tab(
+                text="Chat",
+                icon=ft.icons.CHAT,
+                content = chat_messages,
+            ),
+            ft.Tab(
+                text="Search",
+                icon=ft.icons.TRAVEL_EXPLORE_OUTLINED,
+                content = search_messages
+            ),            
+        ],
+        height=392,
+        width=700,
+        scrollable=True
+    )
 
     user_text = ft.Text(value='Enter your prompt', style=ft.TextStyle(font_family='CabinSketch-Bold'))
     user_text_field = ft.TextField(multiline=True,
                                    width=675)
-    send_button = ft.ElevatedButton(text="Send")
+    send_button = ft.ElevatedButton("Send", icon=ft.icons.ROCKET_LAUNCH)
+    clear_button = ft.ElevatedButton("chats", icon=ft.icons.DELETE_FOREVER, icon_color="pink600")
     pr = ft.ProgressRing(width=16, height=16, stroke_width=2)
     pr.value = 0
     pr_ph = ft.Text()
@@ -62,22 +89,25 @@ def main(page: ft.Page) -> None:
     temp_value_label = ft.Text(value=temp_slider.value)
     model_help_text = ft.Text('^Ollama models are loaded by default', style=ft.TextStyle(size=10), text_align=ft.TextAlign.LEFT)
 
-    def updateChat(message: Message, ai_response: bool = False):
+    def open_url(e):
+        page.launch_url(e.data)
+
+    def updateChat(message: Message = None, ai_response: bool = False, controlHandle: ft.Column = None):
         if ai_response:
-            chat_messages.controls.append(
+            controlHandle.controls.append(
                 ft.Row([
                     ft.Image(src=getAILogo(select_mlX_models.value),
                              width=50,
                              height=50,
                              fit=ft.ImageFit.CONTAIN),
-                    ft.Container(content=ft.Markdown(value=message.text, extension_set="gitHubWeb", code_theme='obsidian', code_style=ft.TextStyle(font_family='Roboto Mono'),selectable=True),
-                                 width=550)
+                    ft.Container(content=ft.Markdown(value=message.text, extension_set="gitHubWeb", code_theme='obsidian', code_style=ft.TextStyle(font_family='Roboto Mono'),selectable=True, on_tap_link=open_url, auto_follow_links=True,),
+                                 width=550 )
                 ],
                 width=500, vertical_alignment=ft.CrossAxisAlignment.START,
                 )
             )
         else:
-            chat_messages.controls.append(
+            controlHandle.controls.append(
                 ft.Row([
                     ft.Image(src=f"logos/vk_logo.png",
                              width=50,
@@ -89,7 +119,7 @@ def main(page: ft.Page) -> None:
                 width=500
                 )
             )
-        chat_messages.scroll_to(offset=-1, duration=1000, curve=ft.AnimationCurve.EASE_IN_OUT)
+        controlHandle.scroll_to(offset=-1, duration=1000, curve=ft.AnimationCurve.EASE_IN_OUT)
         page.update()
 
     def getAILogo(isMlx: bool):
@@ -100,6 +130,7 @@ def main(page: ft.Page) -> None:
         pr.value = None
         user_text_field.disabled = True
         send_button.disabled = True
+        clear_button.disabled = True
         page.update()
     
     def end_spinning():
@@ -107,22 +138,28 @@ def main(page: ft.Page) -> None:
         pr.value = 0
         user_text_field.disabled = False
         send_button.disabled = False
+        clear_button.disabled = False
         page.update()
 
     def send(e: ControlEvent) -> None:
         prompt = user_text_field.value
-        updateChat(Message(user='user', text=prompt))
+        isChat = True if tabs.selected_index == 0 else False
+        ctrlHandle = chat_messages if isChat else search_messages
+        updateChat(Message(user='user', text=prompt), controlHandle=ctrlHandle, ai_response=False)
         user_text_field.value = ""
         show_spinning()
         isMlx = select_mlX_models.value
-        res = firePrompt(prompt=prompt, model=model_dropdown.value, temp=temp_slider.value, isMlx=isMlx)
-        updateChat(Message(user='assistant', text=res), ai_response=True)
+        res, keys = firePrompt(prompt=prompt, model=model_dropdown.value, temp=temp_slider.value, isMlx=isMlx, chat_mode=isChat)
+        if keys != "":
+            res = res + f'\n\n Keywords used for search : {keys} '
+        updateChat(Message(user='assistant', text=res), controlHandle=ctrlHandle, ai_response=True)
         end_spinning()
         page.update()
     
     def enableSend(e: ControlEvent) -> None:
         if user_text_field.value != "" and model_dropdown.value != "unselected":
             send_button.disabled = False
+            clear_button.disabled = False
             page.update()
     
     def swapModels(e: ControlEvent) -> None:
@@ -136,9 +173,19 @@ def main(page: ft.Page) -> None:
     def displayTemp(e: ControlEvent) -> None:
         temp_value_label.value = temp_slider.value
         page.update()
+    
+    def clear(e: ControlEvent) -> None:
+        if tabs.selected_index == 0:
+            del chat_messages.controls[:]
+        else:
+            del search_messages.controls[:]
+        page.update()
+    
 
     send_button.on_click = send
+    clear_button.on_click = clear
     send_button.disabled = True
+    clear_button.disabled = True
     user_text_field.on_change = enableSend
     model_dropdown.on_change = enableSend
     select_mlX_models.on_change = swapModels
@@ -169,12 +216,16 @@ def main(page: ft.Page) -> None:
             user_text,
             user_text_field
         ]),
-        send_button
+        ft.Column([
+            send_button,
+            clear_button
+        ], alignment=ft.MainAxisAlignment.START),
     ], vertical_alignment=ft.CrossAxisAlignment.CENTER, alignment=ft.MainAxisAlignment.CENTER)
     
     page.add(top_banner_view)
     page.add(controls_view)
-    page.add(chat_messages)
+    #page.add(chat_messages)
+    page.add(tabs)
     page.add(ft.Row([pr,pr_ph], alignment=ft.MainAxisAlignment.CENTER, vertical_alignment=ft.CrossAxisAlignment.CENTER))
     page.add(user_input_view)
 
