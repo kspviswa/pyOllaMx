@@ -15,7 +15,7 @@ cookiecutter==2.5.0
 curl_cffi==0.6.0b9
 dataclasses-json==0.6.3
 docstring-inheritance==2.1.2
-duckduckgo_search==4.4
+duckduckgo_search==4.4.2
 flet==0.19.0
 flet-core==0.19.0
 flet-runtime==0.19.0

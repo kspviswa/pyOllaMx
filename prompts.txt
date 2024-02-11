@@ -7,4 +7,12 @@ system_prompt = f"""
 
 My apple watch is constantly overheating. Are there any recent issues on this one?
 
-I'm planning a short road trip from Dallas where I'm currently. What are my options within 100 miles distance and for a budget around 2000$ ? Give me a detailed itenary
+I'm planning a short road trip from Dallas where I'm currently. What are my options within 100 miles distance and for a budget around 2000$ ? Give me a detailed itinerary
+
+I would like a shop a ladies watch. Here are my requirements:
+1) Should be under $1000 budget
+2) Should be a smartwatch capable of stuffs like hear rate monitoring, exercise tracking, cycle tracking, app notifications
+3) Should come with latest 1 year service support
+4) Should offer free shipping within US
+
+Provide me top 3 options along with their pros and cons.

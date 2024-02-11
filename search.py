@@ -13,7 +13,7 @@ search_prompt = f"""
 """
 
 keyword_prompt = f"""
-    Summarize the input text into few keywords
+    Just summarize the input_text into few keywords. Don't respond other than the summary .
 """
 
 chat_history = []
@@ -27,8 +27,8 @@ def retPrompt(res, up):
 
 def retSearchResults(model: str = "", search_str: str = "") -> str:
     keywords_llm = Ollama(model=model, system=keyword_prompt)
-    query_str = keywords_llm.invoke(search_str)
-    #print(f'Keywords for this search texts are {query_str}')
+    query_str = keywords_llm.invoke(f'input_text : \n {search_str}')
+    print(f'Keywords for this search texts are {query_str}')
     search_llm = Ollama(model=model, system=search_prompt)
     searchResults = search.run(query_str)
     response = search_llm.invoke(retPrompt(searchResults, search_str))
