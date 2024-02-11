@@ -27,7 +27,7 @@ def firePrompt(prompt: str, model: str="dolphin-mistral:latest", temp=0.4, isMlx
             if isMlx:
                 res = f'Search not implemented for MlX models. Stay tuned!'
             else:
-                res, keywords = retSearchResults(model=model, search_str=prompt)
+                res, keywords = retSearchResults(model=model, search_str=prompt, temp=temp)
         except Exception as e:
             return f'__Generic Error Occured__ {e}', ""
     return res, keywords
