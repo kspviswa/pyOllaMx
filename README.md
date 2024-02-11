@@ -42,11 +42,28 @@ This command will download the MlX models in a known location to PyOllaMx
 
 3) Now simply open the **PyOllaMx** and start chatting
 
-![](assets/pyollamx_sample.png)
+![Screenshot 2024-02-11 at 5 35 31 PM](https://github.com/kspviswa/pyOllaMx/assets/7476271/17adc063-9ebb-443c-b976-c66d78eb55a6)
 
 ## Demo
 
 https://github.com/kspviswa/pyOllaMx/assets/7476271/dc686d60-182d-4f90-a771-9c1df1c70b5c
+
+## v0.0.2 Features
+
+1. Web search capability _(powered by DuckDuckGo search engine via https://github.com/deedy5/duckduckgo_search)_
+    a. Web search powered via basic RAG using prompt engineering. More advanced techniques are in pipeline
+    b. Search response will cite clickable sources for easy follow-up / deep dive
+    c. Beneath every search response, search keywords are also shown to verify the search scope
+    d. Easy toggle between chat and search operations 
+2. Clear / Erase history 
+3. Automatic scroll on chat messages for better user experience
+4. Basic error & exception handling for searches
+
+Limitations:
+
+- Web search only enabled for Ollama models. Use dolphin-mistral:7b model for better results. MlX model support is planned for next release
+- Search results aren't deterministic and vary vastly among the chosen models. So play with different models to find your optimum
+- Sometimes search results are gibberish. It is due to the fact that search engine RAG is vanilla i.e done via basic prompt engineering without any library support. So re-trigger the same search prompt and see the response once again if the results aren't satisfactory.
 
 ## v0.0.1 Features
 
