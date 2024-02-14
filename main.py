@@ -6,10 +6,10 @@ from utils import Avatar, Message
 
 
 def main(page: ft.Page) -> None:
-    page.title = 'pyOllaMx'
-    page.theme_mode = 'light'
+    page.title = 'PyOllaMx'
+    page.theme_mode = 'dark'
     page.scroll = ft.ScrollMode.ADAPTIVE
-    page.bgcolor = '#C7F9D6'
+    #page.bgcolor = '#C7F9D6'
     page.window_resizable = False
 
     page.window_height = 880
@@ -24,8 +24,8 @@ def main(page: ft.Page) -> None:
     }
 
     banner_image = ft.Image(src=f"logos/pyollama_1.png",
-                      width=125,
-                      height=125,
+                      width=75,
+                      height=75,
                       fit=ft.ImageFit.CONTAIN,
                       )
     banner_text = ft.Text(value='pyOllaMx', style=ft.TextStyle(font_family='CabinSketch-Bold'), size=30)
@@ -59,14 +59,14 @@ def main(page: ft.Page) -> None:
                 content = search_messages
             ),            
         ],
-        height=392,
+        height=490,
         width=700,
-        scrollable=True
+        scrollable=True,
     )
 
     user_text = ft.Text(value='Enter your prompt', style=ft.TextStyle(font_family='CabinSketch-Bold'))
     user_text_field = ft.TextField(multiline=True,
-                                   width=675)
+                                   width=675, autofocus=True)
     send_button = ft.ElevatedButton("Send", icon=ft.icons.ROCKET_LAUNCH)
     clear_button = ft.ElevatedButton("chats", icon=ft.icons.DELETE_FOREVER, icon_color="pink600")
     pr = ft.ProgressRing(width=16, height=16, stroke_width=2)
@@ -181,6 +181,16 @@ def main(page: ft.Page) -> None:
             del search_messages.controls[:]
         page.update()
     
+    def toggleTheme(e: ControlEvent) -> None:
+        icon : ft.IconButton = e.control
+        if icon.icon == ft.icons.DARK_MODE_SHARP:
+            page.theme_mode = "light"
+            icon.icon = ft.icons.DARK_MODE_OUTLINED
+        else: 
+            icon.icon == ft.icons.DARK_MODE_OUTLINED
+            page.theme_mode = "dark"
+            icon.icon = ft.icons.DARK_MODE_SHARP
+        page.update()
 
     send_button.on_click = send
     clear_button.on_click = clear
@@ -190,8 +200,6 @@ def main(page: ft.Page) -> None:
     model_dropdown.on_change = enableSend
     select_mlX_models.on_change = swapModels
     temp_slider.on_change = displayTemp
-
-    top_banner_view = ft.Row([ft.Column([banner_image, banner_text, subbanner_text], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER)], alignment=ft.MainAxisAlignment.CENTER)
 
     temp_control_view = ft.Column([
         temp_slider,
@@ -222,6 +230,16 @@ def main(page: ft.Page) -> None:
         ], alignment=ft.MainAxisAlignment.START),
     ], vertical_alignment=ft.CrossAxisAlignment.CENTER, alignment=ft.MainAxisAlignment.CENTER)
     
+    top_banner_view = ft.Row([
+        ft.Container(),
+        ft.Row([ft.Column([ft.Row([banner_image, banner_text]), subbanner_text], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER)], alignment=ft.MainAxisAlignment.CENTER),
+        ft.Row([
+            ft.IconButton(ft.icons.DARK_MODE_SHARP, icon_size=15, on_click=toggleTheme),
+            ft.IconButton(ft.icons.SETTINGS, icon_size=15),
+            ft.PopupMenuButton()
+        ], alignment="spacearound"),
+    ], alignment="spacebetween")
+        
     page.add(top_banner_view)
     page.add(controls_view)
     #page.add(chat_messages)
