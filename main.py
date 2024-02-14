@@ -3,6 +3,8 @@ from flet_core.control_event import ControlEvent
 from prompt import firePrompt
 from models import retModelOptions
 from utils import Avatar, Message
+from settings import settingsView
+from history import historyView
 
 
 def main(page: ft.Page) -> None:
@@ -67,6 +69,7 @@ def main(page: ft.Page) -> None:
     user_text = ft.Text(value='Enter your prompt', style=ft.TextStyle(font_family='CabinSketch-Bold'))
     user_text_field = ft.TextField(multiline=True,
                                    width=675, autofocus=True)
+    user_text_field.border_color = 'white' if page.theme_mode == 'dark' else 'black'
     send_button = ft.ElevatedButton("Send", icon=ft.icons.ROCKET_LAUNCH)
     clear_button = ft.ElevatedButton("chats", icon=ft.icons.DELETE_FOREVER, icon_color="pink600")
     pr = ft.ProgressRing(width=16, height=16, stroke_width=2)
@@ -186,11 +189,25 @@ def main(page: ft.Page) -> None:
         if icon.icon == ft.icons.DARK_MODE_SHARP:
             page.theme_mode = "light"
             icon.icon = ft.icons.DARK_MODE_OUTLINED
+            user_text_field.border_color = 'black'
         else: 
             icon.icon == ft.icons.DARK_MODE_OUTLINED
             page.theme_mode = "dark"
             icon.icon = ft.icons.DARK_MODE_SHARP
+            user_text_field.border_color = 'white'
         page.update()
+    
+    def view_pop(view):
+        page.views.pop()
+        top_view = page.views[-1]
+        page.go(top_view.route)
+    
+    def showSettings(e: ControlEvent):
+        page.go('/settings')
+    
+    def showHistory(e: ControlEvent):
+        page.go('/history')
+
 
     send_button.on_click = send
     clear_button.on_click = clear
@@ -234,18 +251,48 @@ def main(page: ft.Page) -> None:
         ft.Container(),
         ft.Row([ft.Column([ft.Row([banner_image, banner_text]), subbanner_text], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER)], alignment=ft.MainAxisAlignment.CENTER),
         ft.Row([
-            ft.IconButton(ft.icons.DARK_MODE_SHARP, icon_size=15, on_click=toggleTheme),
-            ft.IconButton(ft.icons.SETTINGS, icon_size=15),
+            ft.IconButton(ft.icons.DARK_MODE_SHARP, icon_size=15, on_click=toggleTheme, tooltip='Toggle Dark Mode'),
+            ft.IconButton(ft.icons.SETTINGS, icon_size=15, on_click=showSettings, tooltip='Model Settings'),
+            ft.IconButton(ft.icons.HISTORY, icon_size=15, on_click=showHistory, tooltip='Conversation History'),
             ft.PopupMenuButton()
         ], alignment="spacearound"),
     ], alignment="spacebetween")
+
+    spinner_view = ft.Row([pr,pr_ph], alignment=ft.MainAxisAlignment.CENTER, vertical_alignment=ft.CrossAxisAlignment.CENTER)
+
+    def route_change(e: ft.RouteChangeEvent) -> None:
+        page.views.clear()
+        page.views.append(
+            ft.View(
+                route = "/",
+                controls=[
+                    top_banner_view,
+                    controls_view,
+                    tabs,
+                    spinner_view,
+                    user_input_view
+                ]
+            )
+        )
+
+        if page.route == "/settings":
+            page.views.append(settingsView(page.theme_mode))
         
-    page.add(top_banner_view)
-    page.add(controls_view)
+        if page.route == "/history":
+            page.views.append(historyView(page.theme_mode))
+
+        page.update()
+
+    page.on_route_change = route_change
+    page.on_view_pop = view_pop
+    page.go(page.route)
+
+    #page.add(top_banner_view)
+    #page.add(controls_view)
     #page.add(chat_messages)
-    page.add(tabs)
-    page.add(ft.Row([pr,pr_ph], alignment=ft.MainAxisAlignment.CENTER, vertical_alignment=ft.CrossAxisAlignment.CENTER))
-    page.add(user_input_view)
+    #page.add(tabs)
+    #page.add(spinner_view)
+    #page.add(user_input_view)
 
 
 if __name__ == '__main__':
