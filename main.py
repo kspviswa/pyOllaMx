@@ -1,10 +1,11 @@
 import flet as ft
 from flet_core.control_event import ControlEvent
-from prompt import firePrompt
-from models import retModelOptions
+from prompt import *
+from models import *
 from utils import Avatar, Message
 from settings import settingsView
 from history import historyView
+import time
 
 
 def main(page: ft.Page) -> None:
@@ -37,14 +38,14 @@ def main(page: ft.Page) -> None:
                               horizontal_alignment=ft.CrossAxisAlignment.START,
                               scroll=ft.ScrollMode.ADAPTIVE,
                               height=350,
-                              width=700,
+                              width=695,
                               )
     search_messages = ft.Column(
                             alignment=ft.MainAxisAlignment.CENTER,
                             horizontal_alignment=ft.CrossAxisAlignment.START,
                             scroll=ft.ScrollMode.ADAPTIVE,
                             height=350,
-                            width=700,
+                            width=695,
                             )
     tabs = ft.Tabs(
         selected_index=0,
@@ -61,14 +62,15 @@ def main(page: ft.Page) -> None:
                 content = search_messages
             ),            
         ],
-        height=490,
+        height=450,
         width=700,
         scrollable=True,
     )
 
     user_text = ft.Text(value='Enter your prompt', style=ft.TextStyle(font_family='CabinSketch-Bold'))
+    enable_streaming = ft.CupertinoCheckbox(label='Enable Streaming', value=False)
     user_text_field = ft.TextField(multiline=True,
-                                   width=675, autofocus=True)
+                                   width=675, autofocus=True, label='Enter your prompt')
     user_text_field.border_color = 'white' if page.theme_mode == 'dark' else 'black'
     send_button = ft.ElevatedButton("Send", icon=ft.icons.ROCKET_LAUNCH)
     clear_button = ft.ElevatedButton("chats", icon=ft.icons.DELETE_FOREVER, icon_color="pink600")
@@ -97,18 +99,30 @@ def main(page: ft.Page) -> None:
 
     def updateChat(message: Message = None, ai_response: bool = False, controlHandle: ft.Column = None):
         if ai_response:
+            ai_message_container = ft.Container(width=550)
+            ai_message_md = ft.Markdown(value="", extension_set="gitHubWeb", code_theme='obsidian', code_style=ft.TextStyle(font_family='Roboto Mono'),selectable=True, on_tap_link=open_url, auto_follow_links=True)
+            ai_message_container.content = ai_message_md
             controlHandle.controls.append(
                 ft.Row([
                     ft.Image(src=getAILogo(select_mlX_models.value),
                              width=50,
                              height=50,
                              fit=ft.ImageFit.CONTAIN),
-                    ft.Container(content=ft.Markdown(value=message.text, extension_set="gitHubWeb", code_theme='obsidian', code_style=ft.TextStyle(font_family='Roboto Mono'),selectable=True, on_tap_link=open_url, auto_follow_links=True,),
-                                 width=550 )
+                             ai_message_container
                 ],
                 width=500, vertical_alignment=ft.CrossAxisAlignment.START,
                 )
             )
+            if enable_streaming.value:
+                full_r = ""
+                for chunk in message.text.split(sep=" "):
+                    full_r += chunk + " "
+                    ai_message_md.value = full_r
+                    controlHandle.scroll_to(offset=-1, duration=100, curve=ft.AnimationCurve.EASE_IN_OUT)
+                    page.update()
+                    time.sleep(0.05)
+            else:
+                ai_message_md.value = message.text
         else:
             controlHandle.controls.append(
                 ft.Row([
@@ -122,7 +136,7 @@ def main(page: ft.Page) -> None:
                 width=500
                 )
             )
-        controlHandle.scroll_to(offset=-1, duration=1000, curve=ft.AnimationCurve.EASE_IN_OUT)
+        controlHandle.scroll_to(offset=-1, duration=100, curve=ft.AnimationCurve.EASE_IN_OUT)
         page.update()
 
     def getAILogo(isMlx: bool):
@@ -180,8 +194,10 @@ def main(page: ft.Page) -> None:
     def clear(e: ControlEvent) -> None:
         if tabs.selected_index == 0:
             del chat_messages.controls[:]
+            clearChatHistory()
         else:
             del search_messages.controls[:]
+            clearSearchHistory()
         page.update()
     
     def toggleTheme(e: ControlEvent) -> None:
@@ -238,14 +254,14 @@ def main(page: ft.Page) -> None:
 
     user_input_view = ft.Row([
         ft.Column([
-            user_text,
+            enable_streaming,
             user_text_field
-        ]),
+        ],alignment=ft.MainAxisAlignment.SPACE_AROUND, horizontal_alignment=ft.CrossAxisAlignment.END),
         ft.Column([
             send_button,
             clear_button
         ], alignment=ft.MainAxisAlignment.START),
-    ], vertical_alignment=ft.CrossAxisAlignment.CENTER, alignment=ft.MainAxisAlignment.CENTER)
+    ], vertical_alignment=ft.CrossAxisAlignment.CENTER, alignment=ft.MainAxisAlignment.SPACE_AROUND)
     
     top_banner_view = ft.Row([
         ft.Container(),
@@ -270,8 +286,11 @@ def main(page: ft.Page) -> None:
                     controls_view,
                     tabs,
                     spinner_view,
-                    user_input_view
-                ]
+                    user_input_view,
+                    #enable_streaming,
+                ],
+                auto_scroll=True,
+                scroll=ft.ScrollMode.ADAPTIVE
             )
         )
 

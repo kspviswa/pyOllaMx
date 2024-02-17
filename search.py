@@ -18,12 +18,26 @@ keyword_prompt = f"""
 
 chat_history = []
 
-def retPrompt(res, up):
+def decorateSearchPrompt(res, up):
     tprompt = f"""
     search_text : {res}
     user_prompt : {up}
     """
     return tprompt
+
+def getKeywordSystemPrompt() -> str:
+    return keyword_prompt
+
+def getSearchSystemPrompt() -> str:
+    return search_prompt
+
+def wrapPromptWithSearch_str(search_str: str) -> str:
+    return f'input_text : \n {search_str}'
+
+def doWebSearch(query_str:str) -> str:
+    r = search.run(query_str)
+    #print(f'r => {r}')
+    return r
 
 def retSearchResults(model: str = "", search_str: str = "", temp=0.4) -> str:
     keywords_llm = Ollama(model=model, system=keyword_prompt, temperature=temp)
@@ -31,5 +45,5 @@ def retSearchResults(model: str = "", search_str: str = "", temp=0.4) -> str:
     print(f'Keywords for this search texts are {query_str}')
     search_llm = Ollama(model=model, system=search_prompt, temperature=temp)
     searchResults = search.run(query_str)
-    response = search_llm.invoke(retPrompt(searchResults, search_str), temperature=temp)
+    response = search_llm.invoke(decorateSearchPrompt(searchResults, search_str), temperature=temp)
     return response, query_str
