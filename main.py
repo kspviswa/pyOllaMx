@@ -3,8 +3,9 @@ from flet_core.control_event import ControlEvent
 from prompt import *
 from models import *
 from utils import Avatar, Message
-from settings import settingsView
-from history import historyView
+from model_hub import *
+from settings import *
+from history import *
 import time
 
 
@@ -26,6 +27,11 @@ def main(page: ft.Page) -> None:
     "CabinSketch-Regular" : "fonts/CabinSketch-Regular.ttf"
     }
 
+    #initialize page state
+    page.session.set('selected_model', 'N/A')
+    page.session.set('selected_temp', 0.0)
+    page.session.set('isMlx', False)
+
     banner_image = ft.Image(src=f"logos/pyollama_1.png",
                       width=75,
                       height=75,
@@ -37,14 +43,14 @@ def main(page: ft.Page) -> None:
                               alignment=ft.MainAxisAlignment.CENTER,
                               horizontal_alignment=ft.CrossAxisAlignment.START,
                               scroll=ft.ScrollMode.ADAPTIVE,
-                              height=350,
+                              height=450,
                               width=695,
                               )
     search_messages = ft.Column(
                             alignment=ft.MainAxisAlignment.CENTER,
                             horizontal_alignment=ft.CrossAxisAlignment.START,
                             scroll=ft.ScrollMode.ADAPTIVE,
-                            height=350,
+                            height=450,
                             width=695,
                             )
     tabs = ft.Tabs(
@@ -62,7 +68,7 @@ def main(page: ft.Page) -> None:
                 content = search_messages
             ),            
         ],
-        height=450,
+        height=488,
         width=700,
         scrollable=True,
     )
@@ -94,17 +100,31 @@ def main(page: ft.Page) -> None:
     temp_value_label = ft.Text(value=temp_slider.value)
     model_help_text = ft.Text('^Ollama models are loaded by default', style=ft.TextStyle(size=10), text_align=ft.TextAlign.LEFT)
 
+    # BottomBar
+    selected_model = ft.Text('None', style=ft.TextStyle(size=15))
+    selected_temp = ft.Text('N/A', style=ft.TextStyle(size=15))
+    selected_model_image = ft.Image(src='logos/combined_logos.png', width=35, height=35)
+    bottom_control = ft.Row([
+        ft.Text('Model Selected: ', style=ft.TextStyle(size=15)),
+        selected_model,
+        selected_model_image,
+        ft.Text('Temperature: ', style=ft.TextStyle(size=15)),
+        selected_temp
+    ], alignment=ft.MainAxisAlignment.START, vertical_alignment=ft.CrossAxisAlignment.CENTER)
+    bottom_appbar = ft.BottomAppBar(content=bottom_control)
+
     def open_url(e):
         page.launch_url(e.data)
 
-    def updateChat(message: Message = None, ai_response: bool = False, controlHandle: ft.Column = None):
+    def updateChat(message: Message, controlHandle: ft.Column, ai_response: bool = False):
+        #print(f'message {message} ai_response {ai_response} controlHandle {controlHandle}')
         if ai_response:
             ai_message_container = ft.Container(width=550)
             ai_message_md = ft.Markdown(value="", extension_set="gitHubWeb", code_theme='obsidian', code_style=ft.TextStyle(font_family='Roboto Mono'),selectable=True, on_tap_link=open_url, auto_follow_links=True)
             ai_message_container.content = ai_message_md
             controlHandle.controls.append(
                 ft.Row([
-                    ft.Image(src=getAILogo(select_mlX_models.value),
+                    ft.Image(src=getAILogo(page.session.get('isMlx')),
                              width=50,
                              height=50,
                              fit=ft.ImageFit.CONTAIN),
@@ -118,7 +138,7 @@ def main(page: ft.Page) -> None:
                 for chunk in message.text.split(sep=" "):
                     full_r += chunk + " "
                     ai_message_md.value = full_r
-                    controlHandle.scroll_to(offset=-1, duration=100, curve=ft.AnimationCurve.EASE_IN_OUT)
+                    # controlHandle.scroll_to(offset=-1, duration=100, curve=ft.AnimationCurve.EASE_IN_OUT)
                     page.update()
                     time.sleep(0.05)
             else:
@@ -136,11 +156,14 @@ def main(page: ft.Page) -> None:
                 width=500
                 )
             )
-        controlHandle.scroll_to(offset=-1, duration=100, curve=ft.AnimationCurve.EASE_IN_OUT)
+        #controlHandle.scroll_to(offset=-1, duration=100, curve=ft.AnimationCurve.EASE_IN_OUT)
         page.update()
 
-    def getAILogo(isMlx: bool):
+    def getAILogo(isMlx: bool) -> str:
         return f'logos/mlx_logo.png' if isMlx else f'logos/pyollama_1.png'
+
+    def getBottomBarModelLogo(isMlx: bool) -> str:
+        return f'logos/mlx.png' if isMlx else f'logos/ollama.png'
 
     def show_spinning():
         pr_ph.value='Working...🏃🏻‍♂️⏳'
@@ -165,8 +188,8 @@ def main(page: ft.Page) -> None:
         updateChat(Message(user='user', text=prompt), controlHandle=ctrlHandle, ai_response=False)
         user_text_field.value = ""
         show_spinning()
-        isMlx = select_mlX_models.value
-        res, keys = firePrompt(prompt=prompt, model=model_dropdown.value, temp=temp_slider.value, isMlx=isMlx, chat_mode=isChat)
+        isMlx = page.session.get('isMlx')
+        res, keys = firePrompt(prompt=prompt, model=page.session.get('selected_model'), temp=page.session.get('selected_temp'), isMlx=isMlx, chat_mode=isChat)
         if keys != "":
             res = res + f'\n\n Keywords used for search : {keys} '
         updateChat(Message(user='assistant', text=res), controlHandle=ctrlHandle, ai_response=True)
@@ -174,7 +197,7 @@ def main(page: ft.Page) -> None:
         page.update()
     
     def enableSend(e: ControlEvent) -> None:
-        if user_text_field.value != "" and model_dropdown.value != "unselected":
+        if user_text_field.value != "" and page.session.get('selected_model') != "N/A":
             send_button.disabled = False
             clear_button.disabled = False
             page.update()
@@ -200,6 +223,9 @@ def main(page: ft.Page) -> None:
             clearSearchHistory()
         page.update()
     
+    def showModelSettings(e: ControlEvent) -> None:
+        page.go('/settings')
+
     def toggleTheme(e: ControlEvent) -> None:
         icon : ft.IconButton = e.control
         if icon.icon == ft.icons.DARK_MODE_SHARP:
@@ -207,7 +233,7 @@ def main(page: ft.Page) -> None:
             icon.icon = ft.icons.DARK_MODE_OUTLINED
             user_text_field.border_color = 'black'
         else: 
-            icon.icon == ft.icons.DARK_MODE_OUTLINED
+            #icon.icon == ft.icons.DARK_MODE_OUTLINED
             page.theme_mode = "dark"
             icon.icon = ft.icons.DARK_MODE_SHARP
             user_text_field.border_color = 'white'
@@ -218,8 +244,8 @@ def main(page: ft.Page) -> None:
         top_view = page.views[-1]
         page.go(top_view.route)
     
-    def showSettings(e: ControlEvent):
-        page.go('/settings')
+    def showModelHub(e: ControlEvent):
+        page.go('/model_hub')
     
     def showHistory(e: ControlEvent):
         page.go('/history')
@@ -264,12 +290,13 @@ def main(page: ft.Page) -> None:
     ], vertical_alignment=ft.CrossAxisAlignment.CENTER, alignment=ft.MainAxisAlignment.SPACE_AROUND)
     
     top_banner_view = ft.Row([
+        ft.IconButton(ft.icons.SETTINGS, on_click=showModelSettings, tooltip='Expand Model Settings'),
         ft.Container(),
         ft.Row([ft.Column([ft.Row([banner_image, banner_text]), subbanner_text], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER)], alignment=ft.MainAxisAlignment.CENTER),
         ft.Row([
-            ft.IconButton(ft.icons.DARK_MODE_SHARP, icon_size=15, on_click=toggleTheme, tooltip='Toggle Dark Mode'),
-            ft.IconButton(ft.icons.SETTINGS, icon_size=15, on_click=showSettings, tooltip='Model Settings'),
-            ft.IconButton(ft.icons.HISTORY, icon_size=15, on_click=showHistory, tooltip='Conversation History'),
+            ft.IconButton(ft.icons.DARK_MODE_SHARP, on_click=toggleTheme, tooltip='Toggle Dark Mode'),
+            ft.IconButton(ft.icons.INSTALL_DESKTOP, on_click=showModelHub, tooltip='Download Models'),
+            ft.IconButton(ft.icons.HISTORY, on_click=showHistory, tooltip='Conversation History'),
             ft.PopupMenuButton()
         ], alignment="spacearound"),
     ], alignment="spacebetween")
@@ -283,19 +310,30 @@ def main(page: ft.Page) -> None:
                 route = "/",
                 controls=[
                     top_banner_view,
-                    controls_view,
+                    #controls_view,
                     tabs,
                     spinner_view,
                     user_input_view,
                     #enable_streaming,
                 ],
                 auto_scroll=True,
-                scroll=ft.ScrollMode.ADAPTIVE
+                scroll=ft.ScrollMode.ADAPTIVE,
+                bottom_appbar=bottom_appbar,
             )
         )
 
+        if page.route == "/":
+            selected_model.value = page.session.get('selected_model')
+            selected_temp.value = page.session.get('selected_temp')
+            selected_model_image.src = getBottomBarModelLogo(page.session.get('isMlx'))
+            banner_image.src = getAILogo(page.session.get('isMlx'))
+
+
         if page.route == "/settings":
-            page.views.append(settingsView(page.theme_mode))
+            page.views.append(settingsView(page))
+
+        if page.route == "/model_hub":
+            page.views.append(modelHubView(page.theme_mode))
         
         if page.route == "/history":
             page.views.append(historyView(page.theme_mode))
@@ -304,6 +342,7 @@ def main(page: ft.Page) -> None:
 
     page.on_route_change = route_change
     page.on_view_pop = view_pop
+    #page.overlay.append(controls_bottom_sheet)
     page.go(page.route)
 
     #page.add(top_banner_view)
