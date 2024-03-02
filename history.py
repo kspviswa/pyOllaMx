@@ -67,6 +67,11 @@ AI : xxxxx
 
 history_data_view =  ft.Container(content=history_mock_data)
 
+coming_soon_view = ft.Column([
+    ft.Text(value='Coming Soon!', style=ft.TextStyle(font_family='CabinSketch-Bold'), size=50)
+], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+
+
 def historyView(theme: str) -> ft.View:
 
     return ft.View(
@@ -74,6 +79,7 @@ def historyView(theme: str) -> ft.View:
         controls = [
             ft.AppBar(title=""),
             history_banner_view,
-            history_data_view
+            coming_soon_view,
+            #history_data_view
         ]
     )

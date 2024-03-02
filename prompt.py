@@ -1,4 +1,3 @@
-from langchain_community.llms import Ollama
 from mlxLLM import MlxLLM
 from search import *
 #from mlxLLM_local import MlxLLM_local

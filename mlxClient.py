@@ -21,7 +21,7 @@ class MlxClient():
         data = {'model': model, 'prompt': prompt, 'temp' : temp}
         try:
             response = requests.post(self.llmHost, data=json.dumps(data), headers={'Content-Type': 'application/json'})
-            # print(f'response code {response.status_code}')
+            print(f'response code {response.status_code}')
             if response.status_code != 200:
                 raise requests.ConnectionError
         except Exception as e:

@@ -1,4 +1,4 @@
-import ollama
+from ollama import chat
 
 class OllamaClient():
 
@@ -20,7 +20,7 @@ class OllamaClient():
         message['role'] = 'user'
         message['content'] = prompt
         self.messages.append(message)
-        response = ollama.chat(model=model, messages=self.messages, options=options)
+        response = chat(model=model, messages=self.messages, options=options)
         self.messages.append(response['message'])
         return response['message']['content']
 
@@ -29,7 +29,7 @@ class OllamaClient():
         message['role'] = 'user'
         message['content'] = prompt
         self.messages.append(message)
-        stream = ollama.chat(model=model, messages=self.messages, options={'temperature' : temp}, stream=True)
+        stream = chat(model=model, messages=self.messages, options={'temperature' : temp}, stream=True)
         return stream
 
 

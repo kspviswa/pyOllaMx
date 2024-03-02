@@ -68,12 +68,25 @@ select_mlX_models.on_change = updateIsMlxInfo
 model_dropdown.on_change = updateModelInfo
 temp_slider.on_change = updateTempInfo
 
+settings_banner_text = ft.Text(value='PyOllaMx Settings', style=ft.TextStyle(font_family='CabinSketch-Bold'), size=30)
+settings_banner_image = ft.Image(src=f"logos/combined_logos.png",
+                      width=75,
+                      height=75,
+                      fit=ft.ImageFit.CONTAIN,
+                      )
+
+settings_banner_view = ft.Row([
+    settings_banner_image,
+    settings_banner_text
+], alignment=ft.MainAxisAlignment.CENTER, vertical_alignment=ft.CrossAxisAlignment.CENTER)
+
 
 def settingsView(page: ft.Page) -> ft.View:
     return ft.View(
         "/settings",
         controls = [
-            ft.AppBar(title=ft.Text("settings"), center_title=True),
+            ft.AppBar(title=""),
+            settings_banner_view,
             controls_view
         ]
     )

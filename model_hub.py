@@ -12,6 +12,10 @@ settings_banner_view = ft.Row([
     settings_banner_text
 ], alignment=ft.MainAxisAlignment.CENTER, vertical_alignment=ft.CrossAxisAlignment.CENTER)
 
+coming_soon_view = ft.Column([
+    ft.Text(value='Coming Soon!', style=ft.TextStyle(font_family='CabinSketch-Bold'), size=50)
+], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+
 ollama_download_text = ft.Text('Download Ollama Model from ollama.ai')
 ollama_download_textField = ft.TextField(width=500, height=50)
 ollama_download_button = ft.IconButton(ft.icons.DOWNLOAD)
@@ -68,6 +72,7 @@ def modelHubView(theme: str) -> ft.View:
         controls = [
             ft.AppBar(title=""),
             settings_banner_view,
-            model_tabs
+            coming_soon_view,
+            #model_tabs
         ]
     )

@@ -11,7 +11,7 @@ import time
 
 def main(page: ft.Page) -> None:
     page.title = 'PyOllaMx'
-    page.theme_mode = 'dark'
+    page.theme_mode = 'light'
     page.scroll = ft.ScrollMode.ADAPTIVE
     #page.bgcolor = '#C7F9D6'
     page.window_resizable = False
@@ -37,7 +37,7 @@ def main(page: ft.Page) -> None:
                       height=75,
                       fit=ft.ImageFit.CONTAIN,
                       )
-    banner_text = ft.Text(value='pyOllaMx', style=ft.TextStyle(font_family='CabinSketch-Bold'), size=30)
+    banner_text = ft.Text(value='PyOllaMx', style=ft.TextStyle(font_family='CabinSketch-Bold'), size=30)
     subbanner_text = ft.Text(value='Your gateway to both Ollama & Apple MlX models')
     chat_messages = ft.Column(
                               alignment=ft.MainAxisAlignment.CENTER,
@@ -78,8 +78,8 @@ def main(page: ft.Page) -> None:
     user_text_field = ft.TextField(multiline=True,
                                    width=675, autofocus=True, label='Enter your prompt')
     user_text_field.border_color = 'white' if page.theme_mode == 'dark' else 'black'
-    send_button = ft.ElevatedButton("Send", icon=ft.icons.ROCKET_LAUNCH)
-    clear_button = ft.ElevatedButton("chats", icon=ft.icons.DELETE_FOREVER, icon_color="pink600")
+    send_button = ft.ElevatedButton("Send", icon=ft.icons.ROCKET_LAUNCH, tooltip='Select a model in the settings menu & type in a prompt to enable this control')
+    clear_button = ft.ElevatedButton("chats", icon=ft.icons.DELETE_FOREVER, icon_color="pink600", tooltip='Atleast one response from AI should be available to delete this conversation')
     pr = ft.ProgressRing(width=16, height=16, stroke_width=2)
     pr.value = 0
     pr_ph = ft.Text()
@@ -229,14 +229,14 @@ def main(page: ft.Page) -> None:
     def toggleTheme(e: ControlEvent) -> None:
         icon : ft.IconButton = e.control
         if icon.icon == ft.icons.DARK_MODE_SHARP:
-            page.theme_mode = "light"
-            icon.icon = ft.icons.DARK_MODE_OUTLINED
-            user_text_field.border_color = 'black'
+            page.theme_mode = "dark"
+            icon.icon = ft.icons.SUNNY
+            user_text_field.border_color = 'white'
         else: 
             #icon.icon == ft.icons.DARK_MODE_OUTLINED
-            page.theme_mode = "dark"
+            page.theme_mode = "light"
             icon.icon = ft.icons.DARK_MODE_SHARP
-            user_text_field.border_color = 'white'
+            user_text_field.border_color = 'dark'
         page.update()
     
     def view_pop(view):
@@ -297,7 +297,7 @@ def main(page: ft.Page) -> None:
             ft.IconButton(ft.icons.DARK_MODE_SHARP, on_click=toggleTheme, tooltip='Toggle Dark Mode'),
             ft.IconButton(ft.icons.INSTALL_DESKTOP, on_click=showModelHub, tooltip='Download Models'),
             ft.IconButton(ft.icons.HISTORY, on_click=showHistory, tooltip='Conversation History'),
-            ft.PopupMenuButton()
+            #ft.PopupMenuButton()
         ], alignment="spacearound"),
     ], alignment="spacebetween")
 
