@@ -42,7 +42,7 @@ This command will download the MlX models in a known location to PyOllaMx
 
 3) Now simply open the **PyOllaMx** and start chatting
 
-![Screenshot 2024-02-11 at 5 35 31 PM](https://github.com/kspviswa/pyOllaMx/assets/7476271/17adc063-9ebb-443c-b976-c66d78eb55a6)
+![sample](assets/pyollamx_sample_updated.png)
 
 ## Demo
 
