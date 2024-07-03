@@ -1,4 +1,4 @@
-duckduckgo_search==4.4.2
+duckduckgo_search==6.1.7
 langchain==0.1.4
 langchain-community==0.0.16
 langchain-core==0.1.17
