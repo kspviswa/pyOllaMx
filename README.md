@@ -6,7 +6,7 @@ Inspired by [Ollama](https://github.com/ollama/ollama), [Apple MlX](https://gith
 
 All these lead to this project (PyOllaMx) and another sister project called [PyOMlx](https://github.com/kspviswa/PyOMlx).
 
-I'm using these in my day to day workflow and I intend to keep develop these for my use and benifit.
+I'm using these in my day to day workflow and I intend to keep develop these for my use and benefit.
 
 If you find this valuable, feel free to use it and contribute to this project as well. Please ⭐️ this repo to show your support and make my day!
 
@@ -29,6 +29,9 @@ ollama pull mistral
 ```
 This command will download the Ollama models in a known location to PyOllaMx
 
+> [!TIP]
+> As of PyOllaMx v0.0.4, you can download & manage ollama models right within PyOllaMx's ModelHub. Check the [v0.0.4 release page](https://github.com/kspviswa/pyOllaMx/releases/tag/v0.0.4) for more details
+
 2) Install [MlX Models from Hugging Face repo](https://huggingface.co/mlx-community).
 
 use hugging-face cli
@@ -43,6 +46,15 @@ This command will download the MlX models in a known location to PyOllaMx
 3) Now simply open the **PyOllaMx** and start chatting
 
 ![sample](assets/pyollamx_sample_updated.png)
+
+## [v0.0.4 Features](https://github.com/kspviswa/pyOllaMx/releases/tag/v0.0.4)
+
+### New Functionality
+Now you can download Ollama models right within 🤌🏻 PyOllaMx's Model Hub tab. You can also inspect existing models 🧐, delete models 🗑️ right within PyOllaMx instead of using Ollama CLI. This greatly simplifies the user experience 🤩🤩. And you before you ask, yes I'm working to bring similar functionality for MLX models from huggingface hub. Please stay tuned 😎
+
+### BugFixes
+1. Updated DDGS dependency to fix some of the rate limit issues
+
 
 ## [v0.0.3 Features](https://github.com/kspviswa/pyOllaMx/releases/tag/v0.0.3)
 
