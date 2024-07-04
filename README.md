@@ -55,6 +55,7 @@ Now you can download Ollama models right within 🤌🏻 PyOllaMx's Model Hub ta
 ### BugFixes
 1. Updated DDGS dependency to fix some of the rate limit issues
 
+Click the release version link above ☝🏻 to view demo gifs explaining the features.
 
 ## [v0.0.3 Features](https://github.com/kspviswa/pyOllaMx/releases/tag/v0.0.3)
 
