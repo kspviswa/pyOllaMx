@@ -96,9 +96,11 @@ ollama_download_hint_button = ft.TextButton("more info", icon="info", on_click=d
 ollama_spacer_text = ft.Text('')
 ollama_download_textField = ft.TextField(width=500, height=50, label='Enter model name eg mistral:7b', expand=True)
 ollama_download_pbar = ft.ProgressBar(bar_height=20, color="green")
-ollama_download_pbar_text = ft.Text()
+ollama_download_pbar_text = ft.Text(max_lines=2)
 ollama_download_pbar.visible = False
 ollama_download_pbar_text.visible = False
+restart_required_container = ft.Text('Restart PyOllaMx to reload new models', size=15, bgcolor=ft.colors.RED_400, color=ft.colors.YELLOW_ACCENT)
+restart_required_container.visible = False
 
 def return_pb_value(total, current):
     if total == 0 or current == 0:
@@ -113,21 +115,27 @@ def download_from_ollama(e: ft.ControlEvent):
     model_name = ollama_download_textField.value
     ollama_download_pbar_text.value = f'Contacting Ollama Library to pull {model_name} ⏳ .....'
     e.page.update()
-    status = pull(model=model_name,stream=True)
-    for s in status:
-        #print(f"S is {s}")
-        if 'total' in s and 'completed' in s:
-            #print("### Inside If")
-            ollama_download_pbar_text.value = s['status']
-            ollama_download_pbar.value = return_pb_value(float(s['total']), float(s['completed']))
-            e.page.update()
-            #print(f"ollama_download_pbar_text {ollama_download_pbar_text.value}")
-            #print(f"ollama_download_pbar {ollama_download_pbar.value}")
-        if s['status'] == 'success':
-            ollama_download_pbar_text.value = f'Pulled {model_name} ✅ . Model list Refreshed ✅'
-            ollama_download_pbar.value = 1.0
-            ollama_models_table.rows = generate_model_rows(list())
-            e.page.update()
+    try:
+        status = pull(model=model_name,stream=True)
+        for s in status:
+            #print(f"S is {s}")
+            if 'total' in s and 'completed' in s:
+                #print("### Inside If")
+                ollama_download_pbar_text.value = s['status']
+                ollama_download_pbar.value = return_pb_value(float(s['total']), float(s['completed']))
+                e.page.update()
+                #print(f"ollama_download_pbar_text {ollama_download_pbar_text.value}")
+                #print(f"ollama_download_pbar {ollama_download_pbar.value}")
+            if s['status'] == 'success':
+                ollama_download_pbar_text.value = f'Pulled {model_name} ✅ . Model list Refreshed ✅'
+                ollama_download_pbar.value = 1.0
+                ollama_models_table.rows = generate_model_rows(list())
+                restart_required_container.visible = True
+                e.page.update()
+    except:
+        ollama_download_pbar.value = 1.0
+        ollama_download_pbar_text.value = f'🚨 Error occured while pulling {model_name}. Double check model name or whether Ollama 🦙 is running 💡'
+        e.page.update()
 
 
     
@@ -155,10 +163,15 @@ ollama_control = ft.Column([
     ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
     ollama_download_pbar_text,
     ollama_download_pbar,
+    restart_required_container,
     ft.Column([
         ollama_models_table
     ], scroll=ft.ScrollMode.ADAPTIVE, height=350),
 ],alignment=ft.MainAxisAlignment.START, horizontal_alignment=ft.CrossAxisAlignment.STRETCH, spacing=10)
+
+coming_soon_view = ft.Column([
+    ft.Text(value='Coming Soon!', style=ft.TextStyle(font_family='CabinSketch-Bold'), size=50)
+], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER)
 
 mlx_control = ft.Column([
         mlx_download_text,
@@ -179,7 +192,7 @@ model_tabs = ft.Tabs(
             ),
             ft.Tab(
                 text="Mlx Models 🤗",
-                content = mlx_control
+                content = coming_soon_view
             ),            
         ],
         height=490,
