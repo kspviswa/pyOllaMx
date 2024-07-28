@@ -14,12 +14,21 @@ def main(page: ft.Page) -> None:
     page.theme_mode = 'light'
     page.scroll = ft.ScrollMode.ADAPTIVE
     #page.bgcolor = '#C7F9D6'
-    page.window_resizable = False
+    page.window.resizable = False
 
-    page.window_height = 880
-    page.window_width= 872
+    page.theme = ft.Theme(
+        font_family="CabinSketch-Regular",
+        color_scheme=ft.ColorScheme(primary='black')
+    )
+    page.dark_theme = ft.Theme(
+        font_family="CabinSketch-Regular",
+        color_scheme=ft.ColorScheme(primary='#ffde03')
+    )
 
-    page.theme = ft.theme.Theme(font_family="CabinSketch-Regular")
+    page.window.height = 880
+    page.window.width= 872
+
+    #page.theme = ft.theme.Theme(font_family="CabinSketch-Regular")
     page.fonts = {
     "Roboto Mono": "RobotoMono-VariableFont_wght.ttf",
     "Homemade Apple" : "fonts/HomemadeApple-Regular.ttf",
@@ -73,8 +82,16 @@ def main(page: ft.Page) -> None:
         scrollable=True,
     )
 
+    def get_check_color() -> str:
+        if page.theme_mode == 'dark' :
+            print('dark')
+            return 'black'
+        else:
+            print('light')
+            return 'white'
+        
     user_text = ft.Text(value='Enter your prompt', style=ft.TextStyle(font_family='CabinSketch-Bold'))
-    enable_streaming = ft.CupertinoCheckbox(label='Enable Streaming', value=False)
+    enable_streaming = ft.CupertinoCheckbox(label='Enable Streaming', value=False, check_color=get_check_color())
     user_text_field = ft.TextField(multiline=True,
                                    width=675, autofocus=True, label='Enter your prompt')
     user_text_field.border_color = 'white' if page.theme_mode == 'dark' else 'black'
@@ -121,7 +138,8 @@ def main(page: ft.Page) -> None:
         if ai_response:
             ai_message_container = ft.Container(width=550)
             ai_message_md = ft.Markdown(value="", extension_set="gitHubWeb", code_theme='obsidian', code_style=ft.TextStyle(font_family='Roboto Mono'),selectable=True, on_tap_link=open_url, auto_follow_links=True)
-            ai_message_container.content = ai_message_md
+            ai_message_md_selectable = ft.SelectionArea(content=ai_message_md)
+            ai_message_container.content = ai_message_md_selectable
             controlHandle.controls.append(
                 ft.Row([
                     ft.Image(src=getAILogo(page.session.get('isMlx')),
@@ -232,11 +250,13 @@ def main(page: ft.Page) -> None:
             page.theme_mode = "dark"
             icon.icon = ft.icons.SUNNY
             user_text_field.border_color = 'white'
+            enable_streaming.check_color = 'black'
         else: 
             #icon.icon == ft.icons.DARK_MODE_OUTLINED
             page.theme_mode = "light"
             icon.icon = ft.icons.DARK_MODE_SHARP
             user_text_field.border_color = 'dark'
+            enable_streaming.check_color = 'white'
         page.update()
     
     def view_pop(view):

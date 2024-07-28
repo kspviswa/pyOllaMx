@@ -35,7 +35,6 @@ model_dropdown = ft.Dropdown(
     options = retModelOptions(),
     value = "unselected",
     dense=True,
-    focused_bgcolor='pink',
 )
 select_mlX_models = ft.Switch(label='Load 🖥️ mlX models from HF',
                                 value=False,

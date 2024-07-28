@@ -3,4 +3,4 @@ langchain==0.1.4
 langchain-community==0.0.16
 langchain-core==0.1.17
 typing_extensions==4.9.0
-flet==0.19.0
+flet==0.23.2
