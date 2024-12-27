@@ -1,11 +1,10 @@
-import requests
-import json
+from openai import OpenAI
 
 class MlxClient():
 
     def __init__(self):
         self.messages = []
-        self.llmHost = 'http://127.0.0.1:5000/serve'
+        self.client = OpenAI(base_url='http://127.0.0.1:11435/v1', api_key='pyomlx')
     
     def clear_history(self):
         self.messages.clear()
@@ -18,17 +17,18 @@ class MlxClient():
         message['role'] = 'user'
         message['content'] = prompt
         self.messages.append(message)
-        data = {'model': model, 'prompt': prompt, 'temp' : temp}
+        #data = {'model': model, 'prompt': prompt, 'temp' : temp}
         try:
-            response = requests.post(self.llmHost, data=json.dumps(data), headers={'Content-Type': 'application/json'})
-            print(f'response code {response.status_code}')
-            if response.status_code != 200:
-                raise requests.ConnectionError
+            #response = requests.post(self.llmHost, data=json.dumps(data), headers={'Content-Type': 'application/json'})
+            #print(f'response code {response.status_code}')
+            response = self.client.chat.completions.create(model=f"mlx-community/{model}", 
+                                          messages=self.messages)
+            response = response.choices[0].message.content
         except Exception as e:
-            raise requests.ConnectionError
-        ai_message = dict({'role' : 'assistant', 'content' : response.text})
+            raise ValueError(e)
+        ai_message = dict({'role' : 'assistant', 'content' : response})
         self.messages.append(ai_message)
-        return response.text
+        return response
 
     def chat_stream(self, prompt:str, model: str, temp: float) -> str:
         pass
