@@ -2,6 +2,8 @@
 # PyOllaMx (Ollama + MlX)
 #### `Your gateway to both Ollama & Apple MlX models`
 
+### ![Downloads](https://img.shields.io/github/downloads/kspviswa/pyOllaMx/total.svg)
+
 Inspired by [Ollama](https://github.com/ollama/ollama), [Apple MlX](https://github.com/ml-explore/mlx) projects and frustrated by the dependencies from external applications like Bing, Chat-GPT etc, I wanted to have my own personal chatbot as a native MacOS application. Sure there are alternatives like streamlit, gradio (which are based, thereby needing a browser) or others like Ollamac, LMStudio, mindmac etc which are good but then restrictive in some means (either by license, or paid or not versatile). Also I wanted to enjoy both Ollama (based on `llama.cpp`) and Mlx models (which are suitable for image generation, audio generation etc and heck I own a mac with Apple silicon 👨🏻‍💻) through a single uniform interface.
 
 All these lead to this project (PyOllaMx) and another sister project called [PyOMlx](https://github.com/kspviswa/PyOMlx).
