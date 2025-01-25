@@ -1,6 +1,8 @@
 import flet as ft
 from models import *
 
+PYOLLAMX_VERSION = '0.0.5'
+
 def clearState(e: ft.ControlEvent) -> None:
     model_dropdown.value = "N/A"
     e.page.session.set('selected_model', 'N/A')
@@ -73,10 +75,12 @@ settings_banner_image = ft.Image(src=f"logos/combined_logos.png",
                       height=75,
                       fit=ft.ImageFit.CONTAIN,
                       )
+settings_pyollmx_version_text = ft.Text(value=f'v{PYOLLAMX_VERSION}', style=ft.TextStyle(font_family='CabinSketch-Bold'), size=10)
 
 settings_banner_view = ft.Row([
     settings_banner_image,
-    settings_banner_text
+    settings_banner_text,
+    settings_pyollmx_version_text
 ], alignment=ft.MainAxisAlignment.CENTER, vertical_alignment=ft.CrossAxisAlignment.CENTER)
 
 

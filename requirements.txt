@@ -2,6 +2,7 @@ duckduckgo_search==6.1.7
 langchain==0.1.4
 langchain-community==0.0.16
 langchain-core==0.1.17
-typing_extensions==4.9.0
-flet==0.23.2
+typing_extensions==4.12.2
+flet==0.25.2
+flet-core==0.24.1
 openai==1.58.1

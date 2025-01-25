@@ -3,7 +3,8 @@ from pathlib import Path
 from typing_extensions import List
 import flet as ft
 import re
-from ollama import list
+from ollamaOpenAIClient import OllamaOpenAPIClient
+from mlxClient import MlxClient
 
 DEFAULT_OLLAMA_MODEL_REGISTRY = Path("~/.ollama/models/manifests/registry.ollama.ai/library").expanduser()
 DEFAULT_HF_MLX_MODEL_REGISTRY = Path("~/.cache/huggingface/hub/").expanduser()
@@ -22,23 +23,12 @@ DEFAULT_HF_MLX_MODEL_REGISTRY = Path("~/.cache/huggingface/hub/").expanduser()
 
 def returnModels() -> List[str]:
     print('entering retModels')
-    response = list()
-    raw_models = response['models']
-    models = []
-    for model in raw_models:
-        models.append(model['name'])
+    models = OllamaOpenAPIClient().list()
     return models
 
 def returnMlxModels() -> List[str]:
-    print(DEFAULT_HF_MLX_MODEL_REGISTRY)
-    models = []
-    for d in os.listdir(DEFAULT_HF_MLX_MODEL_REGISTRY):
-        a_dir = os.path.join(DEFAULT_HF_MLX_MODEL_REGISTRY, d)
-        if os.path.isdir(a_dir) and not d.startswith('.'):
-            #print(f'a_dir is {a_dir}')
-            model = re.split('--', d)[-1]  
-            models.append(model)
-    #print(models)
+    print('entering retModels')
+    models = MlxClient().list()
     return models
 
 def retModelOptions(isMlx=False):

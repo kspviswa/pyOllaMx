@@ -137,7 +137,7 @@ def main(page: ft.Page) -> None:
         #print(f'message {message} ai_response {ai_response} controlHandle {controlHandle}')
         if ai_response:
             ai_message_container = ft.Container(width=550)
-            ai_message_md = ft.Markdown(value="", extension_set="gitHubWeb", code_theme='obsidian', code_style=ft.TextStyle(font_family='Roboto Mono'),selectable=True, on_tap_link=open_url, auto_follow_links=True)
+            ai_message_md = ft.Markdown(value="", extension_set="gitHubWeb", code_theme='obsidian', code_style=ft.TextStyle(font_family='Roboto Mono'), on_tap_link=open_url, auto_follow_links=True)
             ai_message_md_selectable = ft.SelectionArea(content=ai_message_md)
             ai_message_container.content = ai_message_md_selectable
             controlHandle.controls.append(
