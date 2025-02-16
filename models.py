@@ -23,13 +23,19 @@ DEFAULT_HF_MLX_MODEL_REGISTRY = Path("~/.cache/huggingface/hub/").expanduser()
 
 def returnModels() -> List[str]:
     print('entering retModels')
-    models = OllamaOpenAPIClient().list()
-    return models
+    models = []
+    try:
+        return OllamaOpenAPIClient().list()
+    except Exception as e:
+        return models
 
 def returnMlxModels() -> List[str]:
     print('entering retModels')
-    models = MlxClient().list()
-    return models
+    models = []
+    try:
+        return MlxClient().list()
+    except Exception as e:
+        return models
 
 def retModelOptions(isMlx=False):
     options = []

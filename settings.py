@@ -38,6 +38,7 @@ model_dropdown = ft.Dropdown(
     value = "unselected",
     dense=True,
 )
+
 select_mlX_models = ft.Switch(label='Load 🖥️ mlX models from HF',
                                 value=False,
                                 adaptive=True,
@@ -83,8 +84,26 @@ settings_banner_view = ft.Row([
     settings_pyollmx_version_text
 ], alignment=ft.MainAxisAlignment.CENTER, vertical_alignment=ft.CrossAxisAlignment.CENTER)
 
+def display_model_warning_if_needed(page: ft.Page):
+    if len(model_dropdown.options) < 1:
+
+        def handle_close(e):
+            page.close(dlg_modal)
+
+        dlg_modal = ft.AlertDialog(
+            modal=True,
+            title=ft.Text("Unable to get model information"),
+            content=ft.Text("Please check if Ollama / PyOMlx is running. If not, restart Ollama / PyOMlx and restart PyOllaMx as well."),
+            actions=[
+                ft.TextButton("OK", on_click=handle_close),
+            ],
+            actions_alignment=ft.MainAxisAlignment.END,
+        )
+
+        page.open(dlg_modal)
 
 def settingsView(page: ft.Page) -> ft.View:
+    display_model_warning_if_needed(page)
     return ft.View(
         "/settings",
         controls = [

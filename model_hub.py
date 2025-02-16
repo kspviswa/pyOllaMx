@@ -53,27 +53,33 @@ def delete_this_model(e):
     ollama_models_table.rows = generate_model_rows(list())
     e.page.update()
 
+def try_ollama_list():
+    try:
+        return list()
+    except Exception as e:
+        return {}
 
 def generate_model_rows(rawData: dict):
-    total_models = rawData['models']
-    data = {}
     rows=[]
-    for model in total_models:
-        data[model['name']] = model['details']['parameter_size']
+    if rawData:
+        total_models = rawData['models']
+        data = {}
+        for model in total_models:
+            data[model['name']] = model['details']['parameter_size']
 
-    for k,v in data.items():
-        rows.append(ft.DataRow(cells=[
-            ft.DataCell(ft.Text(k)),
-            ft.DataCell(ft.Text(v)),
-            ft.DataCell(ft.IconButton(
-                    icon=ft.icons.DELETE_FOREVER_ROUNDED,
-                    icon_color="pink600",
-                    icon_size=20,
-                    tooltip="Delete this model",
-                    key=k,
-                    on_click=delete_this_model
-                ))
-        ]))
+        for k,v in data.items():
+            rows.append(ft.DataRow(cells=[
+                ft.DataCell(ft.Text(k)),
+                ft.DataCell(ft.Text(v)),
+                ft.DataCell(ft.IconButton(
+                        icon=ft.icons.DELETE_FOREVER_ROUNDED,
+                        icon_color="pink600",
+                        icon_size=20,
+                        tooltip="Delete this model",
+                        key=k,
+                        on_click=delete_this_model
+                    ))
+            ]))
     return rows
 
 ollama_models_table = ft.DataTable(
@@ -90,7 +96,7 @@ ollama_models_table = ft.DataTable(
         ft.DataColumn(ft.Text('')),
     ])
 
-ollama_models_table.rows = generate_model_rows(list())
+ollama_models_table.rows = generate_model_rows(try_ollama_list())
 
 ollama_download_hint_button = ft.TextButton("more info", icon="info", on_click=display_alert)
 ollama_spacer_text = ft.Text('')
