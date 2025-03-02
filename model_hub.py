@@ -171,8 +171,9 @@ ollama_control = ft.Column([
     ollama_download_pbar,
     restart_required_container,
     ft.Column([
+        ft.Text(),
         ollama_models_table
-    ], scroll=ft.ScrollMode.ADAPTIVE, height=350),
+    ], scroll=ft.ScrollMode.ADAPTIVE, height=300),
 ],alignment=ft.MainAxisAlignment.START, horizontal_alignment=ft.CrossAxisAlignment.STRETCH, spacing=10)
 
 coming_soon_view = ft.Column([

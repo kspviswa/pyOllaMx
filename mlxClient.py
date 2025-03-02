@@ -14,7 +14,7 @@ class MlxClient():
         self.messages.append(message)
     
     def chat(self, prompt:str, model: str, temp: float, system:str = 'default') -> str:
-        print('Entering Chat for Mlx' + model)
+        #print('Entering Chat for Mlx' + model)
         message = {}
         message['role'] = 'user'
         message['content'] = prompt
@@ -26,7 +26,7 @@ class MlxClient():
             response = self.client.chat.completions.create(model=model, 
                                           messages=self.messages)
             response = response.choices[0].message.content
-            print(response)
+            # print(response)
         except Exception as e:
             raise ValueError(e)
         ai_message = dict({'role' : 'assistant', 'content' : response})

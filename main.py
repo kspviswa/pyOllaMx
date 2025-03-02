@@ -136,10 +136,35 @@ def main(page: ft.Page) -> None:
     def updateChat(message: Message, controlHandle: ft.Column, ai_response: bool = False):
         #print(f'message {message} ai_response {ai_response} controlHandle {controlHandle}')
         if ai_response:
+            ai_thinking_text = re.sub(r"</think>.*$", "", message.text, flags=re.DOTALL) if "</think>" in message.text else ""
+            ai_non_thinking_text = message.text
+
+            #print(f'### {ai_thinking_text}')
             ai_message_container = ft.Container(width=550)
             ai_message_md = ft.Markdown(value="", extension_set="gitHubWeb", code_theme='obsidian', code_style=ft.TextStyle(font_family='Roboto Mono'), on_tap_link=open_url, auto_follow_links=True)
             ai_message_md_selectable = ft.SelectionArea(content=ai_message_md)
-            ai_message_container.content = ai_message_md_selectable
+            ai_message_thinking_md = ft.ExpansionTile(
+            title=ft.Text("Thinking tokens 🤔", font_family="RobotoSlab"),
+            subtitle=ft.Text("Expand to reveal the model's thinking tokens", theme_style=ft.TextThemeStyle.BODY_SMALL, font_family="RobotoSlab"),
+            affinity=ft.TileAffinity.LEADING,
+            initially_expanded=False,
+            collapsed_text_color=ft.Colors.BLUE,
+            text_color=ft.Colors.BLUE,
+            controls=[
+                ft.ListTile(title=ft.Text(
+                    theme_style=ft.TextThemeStyle.BODY_SMALL,
+                    font_family="RobotoSlab",
+                )),
+            ],
+        )
+            if ai_thinking_text :
+                ai_message_container.content = ft.Column([ai_message_thinking_md,
+                                                      ai_message_md_selectable,
+                                                      ])
+                ai_non_thinking_text = ''.join(message.text.split("</think>")[1:])
+            else:
+                ai_message_container.content = ai_message_md_selectable
+
             controlHandle.controls.append(
                 ft.Row([
                     ft.Image(src=getAILogo(page.session.get('isMlx')),
@@ -151,16 +176,17 @@ def main(page: ft.Page) -> None:
                 width=500, vertical_alignment=ft.CrossAxisAlignment.START,
                 )
             )
+            ai_message_thinking_md.controls[0].title.value = ai_thinking_text
             if enable_streaming.value:
                 full_r = ""
-                for chunk in message.text.split(sep=" "):
+                for chunk in ai_non_thinking_text.split(sep=" "):
                     full_r += chunk + " "
                     ai_message_md.value = full_r
                     # controlHandle.scroll_to(offset=-1, duration=100, curve=ft.AnimationCurve.EASE_IN_OUT)
                     page.update()
                     time.sleep(0.05)
             else:
-                ai_message_md.value = message.text
+                ai_message_md.value = ai_non_thinking_text
         else:
             controlHandle.controls.append(
                 ft.Row([

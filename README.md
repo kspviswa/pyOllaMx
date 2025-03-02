@@ -22,6 +22,10 @@ MacOS DMGs are available in [Releases](https://github.com/kspviswa/pyOllaMx/rele
 
 [PyOMlx](https://github.com/kspviswa/PyOMlx) : A Macos App capable of discovering, loading & serving Apple MlX models downloaded from [Apple MLX Community repo in hugging face](https://huggingface.co/mlx-community) 🤗
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=kspviswa/pyOllaMx&type=Date)](https://star-history.com/#kspviswa/pyOllaMx&Date)
+
 ## How to use?
 
 1) Install [Ollama Application](https://ollama.ai/download) & use Ollama CLI to download your desired models
