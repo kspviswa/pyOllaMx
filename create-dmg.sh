@@ -4,7 +4,7 @@ mkdir -p dist/dmg
 # Empty the dmg folder.
 rm -r dist/dmg/*
 # Copy the app bundle to the dmg folder.
-cp -r "build/macos/pyollamx.app" dist/dmg
+cp -r "build/macos/PyOllamx.app" dist/dmg
 # If the DMG already exists, delete it.
 test -f "dist/PyOllaMx.dmg" && rm "dist/PyOllaMx.dmg"
 create-dmg \

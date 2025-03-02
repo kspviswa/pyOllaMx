@@ -53,6 +53,12 @@ This command will download the MlX models in a known location to PyOllaMx
 
 ![sample](assets/pyollamx_sample_updated.png)
 
+## [v0.0.7 Features](https://github.com/kspviswa/pyOllaMx/releases/tag/v0.0.4)
+
+### New Functionality
+
+Added supported to **thinking tokens** for reasoning models like DeepSeek-R1
+
 ## [v0.0.4 Features](https://github.com/kspviswa/pyOllaMx/releases/tag/v0.0.4)
 
 ### New Functionality
